@@ -1,5 +1,7 @@
 # 安装 postgresql
 
+## Arch Linux
+
 在 Arch Linux 上安装 PostgreSQL 的过程与大多数发行版略有不同，因为它在安装后不会自动初始化数据库
 
 ```bash
@@ -73,4 +75,62 @@ psql -d open_tiku_test -U tiku_rw -W
 ```bash
 -- 将 tiku_rw 替换为你要修改的用户名，'new_password' 替换为新密码
 ALTER USER tiku_rw WITH PASSWORD 'new_password';
+```
+
+## Mac OS
+
+安装
+
+```
+brew install postgresql@18
+```
+
+配置环境变量
+
+```
+echo $SHELL
+```
+
+如果是 zsh 则类似拷贝安装完成后的提示
+
+```
+echo 'export PATH="/usr/local/opt/postgresql@18/bin:$PATH"' >> ~/.zshrc
+```
+
+手动启动
+
+```
+brew servces start postgresql@18
+```
+
+连接数据库服务
+
+```
+psql postgres
+```
+
+创建用户并设置密码
+
+```
+CREATE USER tiki_rw WITH PASSWORD '你的安全密码';
+```
+
+创建数据库并指定所有者为新用户
+
+```
+CREATE DATABASE open_tiku_test OWNER tiki_rw;
+```
+
+赋予管理权限
+
+虽然 OWNER 已经拥有很大权限，但为了确保该用户可以完全管理该数据库（如创建模式等），建议执行
+
+```
+GRANT ALL PRIVILEGES ON DATABASE open_tiku_test TO tiki_rw;
+```
+
+使用新用户连接测试
+
+```
+psql -U tiki_rw -d open_tiku_test -h localhost
 ```

@@ -1,4 +1,4 @@
-# Arch Linux
+# Arch Linux Install
 
 下面的步骤是基于 UEFI 模式的安装, 其它方式不能盲目执行
 
@@ -97,7 +97,7 @@ mount -t btrfs /dev/nvme1n1p2 /mnt
 btrfs subvolume create /mnt/@
 
 # 创建 home 子卷
-btrfs subvolume cretate /mnt/@home
+btrfs subvolume create /mnt/@home
 
 # 关于交换空间 swap, 目的是存储内存中的冷数据, 还能在内存不够用的时候把硬盘当作虚拟内存使用等, 但是这些对桌面用户意义不大
 
@@ -309,7 +309,7 @@ sudo pacman -S --needed linux-zen-headers
 # lib32-nvidia-utils 一般会自动安装, 如果没有可以手动安装
 sudo pacman -S nvidia-open-dkms nvidia-utils lib32-nvidia-utils
 
-# 安装视频编解码
+# 安装视频编解码, amd 无需安装默认已提供
 sudo pacman -S intel-media-driver
 
 # nvidia 也可以支持, 一般也安装
@@ -319,20 +319,19 @@ sudo pacman -S --needed libva-nvidia-driver
 sudo reboot
 
 # 安装声卡固件
-# sof-firmware
-# alsa-ucm-conf
+# 安装 ALSA（高级 Linux 声音架构）底层的固件和配置脚本
+# sof-firmware 主要针对 Intel 酷睿系列（Skylake 及更新） 以及部分 AMD/联发科平台的笔记本电脑提供开源的音频数字信号处理（DSP）固件
+# alsa-ucm-conf 提供硬件“用例”配置脚本
 # alsa-firmware 不常见或者比较旧的设备提供固件
 sudo pacman -S sof-firmware alsa-ucm-conf alsa-firmware
 
 # pipewire 红帽主导开发的新兴音视频服务技术
 # wireplumber 会话管理器
-# pipewire-pluse
-# pipewire-alsa
-# pipewire-jack
+# pipewire-pluse 建立一个模拟 PulseAudio 的服务端 绝大多数桌面应用（如 Chrome、Firefox、Discord、网易云音乐）都使用 PulseAudio 协议 安装它后，这些应用会认为系统仍在运行 PulseAudio，从而无缝工作
+# pipewire-alsa 为那些直接调用 ALSA 低层接口的旧软件提供兼容
+# pipewire-jack 为专业音频软件（如 Ardor, Bitwig, OBS 的某些插件）提供支持 它允许专业音频应用以极低延迟运行 且能与普通桌面应用同时发声
+# 安装完成后，PipeWire 通常由用户级别的 systemd 自动管理 无需手动 sudo systemctl enable（在图形界面登录时会自动拉起）
 sudo pacman -S pipewire wireplumber pipewire-pulse pipewire-alsa pipewire-jack
-
-# 启动服务
-systemctl --user enable pipewire wireplumber pipewire-pulse
 
 # 安装蓝牙
 sudo pacman -S bluez

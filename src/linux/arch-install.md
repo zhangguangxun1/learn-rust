@@ -9,6 +9,8 @@
 ip a
 
 # 无线网络连接工具, 命令进入无线网络配置工作区内
+# iwctl 是 iNet 无线守护程序 (iwd) 的命令行客户端工具，主要用于在 Arch Linux 安装环境或超轻量级系统中连接 Wi-Fi
+# 它于 2020 年取代了 wifi-menu，成为 Arch ISO 官方首选的无线连接工具
 iwctl
 
 # 列出所有的网络设备信息列表, 通常是 ip a 里面看到的 wlan0 是有效的
@@ -40,6 +42,7 @@ timedatectl set-ntp true
 
 ```bash
 # reflector 自动配置镜像源工具
+# reflector 是 Arch Linux 中一个非常实用的 Python 脚本，专门用于从 Arch Linux Mirror Status 页面获取最新的镜像列表，并根据速度、稳定性和地理位置进行筛选，自动更新 /etc/pacman.d/mirrorlist 文件
 # -a 最近12小时更新过的源
 # -c 指定所在的国家或地区 cn 是中国
 # -f 挑选最快的10个
@@ -119,7 +122,8 @@ mount --mkdir /dev/nvme1n1p1 /mnt/efi
 ```bash
 # 安装基本系统
 # pacstrap 把指定的软件安装到根目录
-# -K 复制密钥
+# pacstrap 是 Arch Linux 安装过程中的核心工具，它是一个 Bash 脚本，专门用于将基础软件包安装到指定的挂载目录下（通常是 /mnt），从而构建出一个能够自主运行的 Linux 系统根目录
+# -K 复制密钥 初始化新系统的 pacman 信任链，将主机的 GPG 密钥复制到新系统，避免安装后出现签名验证问题
 # /mnt 我们要安装系统的根
 # base 基本包
 # base-devel 是后续编译需要安装的工具包
@@ -264,17 +268,31 @@ vim /ect/pacman.conf
 # inotify-tools
 pacman -S snapper snap-pac btrfs-assistant grub-btrfs inotify-tools
 
-# 开启快照
-systemctl enable --now grub-btrfsd
-
 # 重启让自动创建快照功能生效
 reboot
 
 # 创建快照, 设置快照的范围是根目录
 snapper -c root create-config /
 
-# 创建 home 配置
+# 创建 home 配置, 可以不快照, 下一次重装系统时记得 单独分区 /home 后续重装就可以不用覆盖该目录能保存个人文件
 snapper -c home ceate-config /home
+
+# 开启快照
+systemctl enable --now grub-btrfsd
+
+# 开启自动清理机制
+# 如果不配置，快照会占满你的 1T 硬盘。
+# 修改配置： sudo nano /etc/snapper/configs/root
+# 建议修改参数：
+# TIMELINE_LIMIT_HOURLY="5"
+# TIMELINE_LIMIT_DAILY="7"
+# TIMELINE_LIMIT_WEEKLY="0"
+# TIMELINE_LIMIT_MONTHLY="0"
+# 这样只会保留最近几小时和最近几天的快照。
+# 开启服务：
+
+sudo systemctl enable --now snapper-timeline.timer
+sudo systemctl enable --now snapper-cleanup.timer
 
 # linux-lts 内核不会长期更新, 系统出现问题可以借助它进入系统排查是否是内核问题导致的系统错误, 我发觉这个可以不安装
 # 如果是可以用 downgrade 进行系统降级, downgrade 需要从 aur 安装

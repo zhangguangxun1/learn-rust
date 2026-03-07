@@ -319,18 +319,24 @@ sudo systemctl enable --now snapper-cleanup.timer
 ```bash
 # nvidia
 # --needed 安装过就不再重新安装
-# linux-zen-headers 编译需要依赖的头文件
-# linux-lts-headers lts 内核可以不安装
+# linux-zen-headers 编译需要依赖的头文件, 针对游戏等优化过的内核
+# linux-lts-headers lts 长期支持的内核可以不安装
 sudo pacman -S --needed linux-zen-headers
 
 # 可能需要借助 arch wiki 查看需要安装说明
-# lib32-nvidia-utils 一般会自动安装, 如果没有可以手动安装
+# nvidia-open-dkms NVIDIA 官方提供的开源版本内核模块。DKMS（动态内核模块支持）版本会在你更新系统内核（如从 Linux 6.x 升级到 7.x）时自动重新编译驱动，防止系统更新后无法进入桌面
+# nvidia-utils 安装用户空间组件，包含驱动核心文件、控制面板信息以及 CUDA 运行库
+# lib32-nvidia-utils 一般会自动安装, 如果没有可以手动安装, 提供 32 位兼容库。这对于运行 Steam、Wine/Proton 游戏以及旧版应用程序是必不可少的
 sudo pacman -S nvidia-open-dkms nvidia-utils lib32-nvidia-utils
 
 # 安装视频编解码, amd 无需安装默认已提供
+# 硬件视频加速：该驱动允许 GPU 硬件处理视频的解码、编码和后期处理（VDBox/VEBox），显著降低播放 4K 视频或进行串流时的 CPU 占用率
+# API 支持：主要提供对 VA-API（视频加速 API）的支持，这是 Linux 上 Intel 显卡进行视频加速的原生标准
 sudo pacman -S intel-media-driver
 
 # nvidia 也可以支持, 一般也安装
+# 硬件视频加速：解决 NVIDIA 原生只支持 VDPAU 而不支持 VA-API 的问题，使 Firefox 等仅支持 VA-API 的软件能使用 GPU 解码视频，大幅降低 CPU 占用
+# 兼容性：在 2026 年，该驱动已成为 NVIDIA 用户在 Linux 下实现现代浏览器硬件加速的标准方案
 sudo pacman -S --needed libva-nvidia-driver
 
 # 重启

@@ -100,7 +100,7 @@ echo 'export PATH="/usr/local/opt/postgresql@18/bin:$PATH"' >> ~/.zshrc
 手动启动
 
 ```
-brew servces start postgresql@18
+brew services start postgresql@18
 ```
 
 连接数据库服务
@@ -112,13 +112,13 @@ psql postgres
 创建用户并设置密码
 
 ```
-CREATE USER tiki_rw WITH PASSWORD '你的安全密码';
+CREATE USER tiku_rw WITH PASSWORD '123456';
 ```
 
 创建数据库并指定所有者为新用户
 
 ```
-CREATE DATABASE open_tiku_test OWNER tiki_rw;
+CREATE DATABASE open_tiku_test OWNER tiku_rw;
 ```
 
 赋予管理权限
@@ -126,11 +126,11 @@ CREATE DATABASE open_tiku_test OWNER tiki_rw;
 虽然 OWNER 已经拥有很大权限，但为了确保该用户可以完全管理该数据库（如创建模式等），建议执行
 
 ```
-GRANT ALL PRIVILEGES ON DATABASE open_tiku_test TO tiki_rw;
+GRANT ALL PRIVILEGES ON DATABASE open_tiku_test TO tiku_rw;
 ```
 
 使用新用户连接测试
 
 ```
-psql -U tiki_rw -d open_tiku_test -h localhost
+psql -U tiku_rw -d open_tiku_test -h localhost
 ```

@@ -2,9 +2,29 @@
 
 kdenlive 视频导出体积较大，需要压缩后再上传。
 
+## 合并
+
+```bash
+# 生成文件列表
+for f in *.MP4; do echo "file '$f'" >> list.txt; done
+
+# 合并
+ffmpeg -f concat -safe 0 -i list.txt -c copy input.mp4
+```
+
+-f concat —— 使用 concat demuxer
+
+-safe 0 —— 允许使用复杂路径或特殊文件名
+
+-i list.txt —— 指定文件列表
+
+-c copy —— 不重新编码，直接复制流（无损、瞬时完成）
+
+input.mp4 —— 合并后的输出文件名，支持 mp4/mkv/avi 等
+
 一个 10G 的视频
 
-## 通常使用-平衡画质与大小
+## 压缩1: 通常使用-平衡画质与大小
 
 ```bash
 ffmpeg -hwaccel cuda -i input.mp4 \
@@ -27,7 +47,7 @@ ffmpeg -hwaccel cuda -i input.mp4 \
 
 10G 的视频该方式压缩信息
 
-### 总结
+### 概览
 
 frame=126762 fps= 94 q=30.0 Lsize= 3885198KiB time=00:42:15.18 bitrate=12554.4kbits/s speed=1.88x elapsed=0:22:26.52
 
@@ -44,7 +64,7 @@ elapsed=0:22:26.52 已用时间22分26秒
 
 压缩完毕是 4G，但是只需要 22 分钟左右，的确兼顾画质和大小。
 
-## 追求最小体积-压缩时间很长
+## 压缩2： 追求最小体积-压缩时间很长
 
 ```bash
 ffmpeg -i input.mp4 \
@@ -63,7 +83,7 @@ ffmpeg -i input.mp4 \
 
 -c:a libopus -b:a 96k：使用高效的 Opus 音频编码，96kbps 的立体声音质已相当出色。
 
-### 总结
+### 概览
 
 frame=35457 fps=1.9 q=30.1 size= 1819136KiB time=00:11:49.10 bitrate=21015.9kbits/s speed=0.0374x elapsed=5:16:05.26
 

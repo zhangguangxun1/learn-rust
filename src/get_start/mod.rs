@@ -12,3 +12,5 @@ mod match_ext;
 mod fn_ext;
 #[cfg(test)]
 mod generic_ext;
+#[cfg(test)]
+mod impl_ext;

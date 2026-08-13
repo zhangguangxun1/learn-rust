@@ -29,5 +29,4 @@ fn test_read_struct() {
     let person = Person::new("John Smith".to_string(), 18);
     println!("{:?}", person.get_name());
     println!("{:?}", person.get_age());
-    println!("{:?}", person.get_age_ext());
 }

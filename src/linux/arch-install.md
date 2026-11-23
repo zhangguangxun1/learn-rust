@@ -45,10 +45,10 @@ timedatectl set-ntp true
 # reflector 是 Arch Linux 中一个非常实用的 Python 脚本，专门用于从 Arch Linux Mirror Status 页面获取最新的镜像列表，并根据速度、稳定性和地理位置进行筛选，自动更新 /etc/pacman.d/mirrorlist 文件
 # -a 最近12小时更新过的源
 # -c 指定所在的国家或地区 cn 是中国
-# -f 挑选最快的10个
+# -f 挑选最快的5个
 # --sort score 按照下载时间和同步速度综合评分排序
 # --v 把这个过程显示出来
-reflector -a 12 -c cn -f 10 --sort score --v --save /etc/pacman.d/mirrorlist
+reflector -a 12 -c cn -f 5 --sort score --v --save /etc/pacman.d/mirrorlist
 
 # 更新数据库并安装密钥, 回车确认安装即可
 pacman -Sy archlinux-keyring
